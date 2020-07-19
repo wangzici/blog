@@ -29,9 +29,15 @@ class HorizonRecycleView @JvmOverloads constructor(
     }
 
     override fun onInterceptTouchEvent(e: MotionEvent?): Boolean {
-        Log.i("wzt", "[HorizonRecycleView][onInterceptTouchEvent] e = = ${MotionEvent.actionToString(e!!.action)}")
-        val result = super.onInterceptTouchEvent(e)
-        Log.i("wzt", "[HorizonRecycleView][onInterceptTouchEvent] return $result")
+        //若不调用onInterceptTouchEvent，直接返回true或false会导致滑动的瞬间瞬移。正常情况下RecycleView的onInterceptTouchEvent方法也有关于滑动的判断
+        var result = super.onInterceptTouchEvent(e)
+        Log.i("wzt", "[HorizonRecycleView][onInterceptTouchEvent] e = ${MotionEvent.actionToString(e!!.action)}")
+        when (e.action) {
+            MotionEvent.ACTION_DOWN ->{
+                result = false
+            }
+        }
+        Log.i("wzt", "[HorizonRecycleView][onInterceptTouchEvent] return = $result}")
         return result
     }
 }
