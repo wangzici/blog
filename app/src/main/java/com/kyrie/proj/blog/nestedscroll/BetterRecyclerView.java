@@ -7,7 +7,6 @@ import android.view.ViewConfiguration;
 
 import androidx.annotation.Nullable;
 import androidx.core.view.MotionEventCompat;
-import androidx.core.view.ViewConfigurationCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -43,7 +42,7 @@ public class BetterRecyclerView extends RecyclerView{
                 mTouchSlop = vc.getScaledTouchSlop();
                 break;
             case TOUCH_SLOP_PAGING:
-                mTouchSlop = ViewConfigurationCompat.getScaledPagingTouchSlop(vc);
+                mTouchSlop = vc.getScaledPagingTouchSlop();
                 break;
             default:
                 break;
@@ -52,24 +51,32 @@ public class BetterRecyclerView extends RecyclerView{
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent e) {
-        final int action = MotionEventCompat.getActionMasked(e);
-        final int actionIndex = MotionEventCompat.getActionIndex(e);
+        LayoutManager mLayout = getLayoutManager();
+        if (mLayout == null) {
+            return false;
+        }
+
+        final boolean canScrollHorizontally = mLayout.canScrollHorizontally();
+        final boolean canScrollVertically = mLayout.canScrollVertically();
+
+        final int action = e.getActionMasked();
+        final int actionIndex = e.getActionIndex();
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                mScrollPointerId = MotionEventCompat.getPointerId(e, 0);
+                mScrollPointerId = e.getPointerId(0);
                 mInitialTouchX = (int) (e.getX() + 0.5f);
                 mInitialTouchY = (int) (e.getY() + 0.5f);
                 return super.onInterceptTouchEvent(e);
 
             case MotionEvent.ACTION_POINTER_DOWN:
-                mScrollPointerId = MotionEventCompat.getPointerId(e, actionIndex);
-                mInitialTouchX = (int) (MotionEventCompat.getX(e, actionIndex) + 0.5f);
-                mInitialTouchY = (int) (MotionEventCompat.getY(e, actionIndex) + 0.5f);
+                mScrollPointerId = e.getPointerId(actionIndex);
+                mInitialTouchX = (int) (e.getX(actionIndex) + 0.5f);
+                mInitialTouchY = (int) (e.getY(actionIndex) + 0.5f);
                 return super.onInterceptTouchEvent(e);
 
             case MotionEvent.ACTION_MOVE: {
-                final int index = MotionEventCompat.findPointerIndex(e, mScrollPointerId);
+                final int index = e.findPointerIndex(mScrollPointerId);
                 if (index < 0) {
                     return false;
                 }
@@ -79,13 +86,11 @@ public class BetterRecyclerView extends RecyclerView{
                 if (getScrollState() != SCROLL_STATE_DRAGGING) {
                     final int dx = x - mInitialTouchX;
                     final int dy = y - mInitialTouchY;
-                    final boolean canScrollHorizontally = getLayoutManager().canScrollHorizontally();
-                    final boolean canScrollVertically = getLayoutManager().canScrollVertically();
                     boolean startScroll = false;
-                    if (canScrollHorizontally && Math.abs(dx) > mTouchSlop && (Math.abs(dx) >= Math.abs(dy) || canScrollVertically)) {
+                    if (canScrollHorizontally && Math.abs(dx) > mTouchSlop && Math.abs(dx) >= Math.abs(dy)) {
                         startScroll = true;
                     }
-                    if (canScrollVertically && Math.abs(dy) > mTouchSlop && (Math.abs(dy) >= Math.abs(dx) || canScrollHorizontally)) {
+                    if (canScrollVertically && Math.abs(dy) > mTouchSlop && Math.abs(dy) >= Math.abs(dx)) {
                         startScroll = true;
                     }
                     return startScroll && super.onInterceptTouchEvent(e);
