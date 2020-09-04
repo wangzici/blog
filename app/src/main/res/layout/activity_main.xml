@@ -10,36 +10,48 @@
         android:id="@+id/button_fragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="onClick"
         android:text="FragmentTest"
         app:layout_constraintBottom_toTopOf="@+id/button_nested"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        android:onClick="onClick"/>
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <Button
         android:id="@+id/button_nested"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="nested_recycleView"
         android:layout_marginTop="20dp"
+        android:onClick="onClick"
+        android:text="nested_recycleView"
         app:layout_constraintBottom_toTopOf="@id/button_text"
         app:layout_constraintEnd_toEndOf="@+id/button_fragment"
         app:layout_constraintStart_toStartOf="@+id/button_fragment"
-        app:layout_constraintTop_toBottomOf="@+id/button_fragment"
-        android:onClick="onClick"/>
+        app:layout_constraintTop_toBottomOf="@+id/button_fragment" />
 
     <Button
         android:id="@+id/button_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="textView"
         android:layout_marginTop="20dp"
+        android:onClick="onClick"
+        android:text="textView"
+        app:layout_constraintBottom_toTopOf="@id/button_track"
+        app:layout_constraintEnd_toEndOf="@+id/button_fragment"
+        app:layout_constraintStart_toStartOf="@+id/button_fragment"
+        app:layout_constraintTop_toBottomOf="@+id/button_nested" />
+
+    <Button
+        android:id="@+id/button_track"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:onClick="onClick"
+        android:text="上报"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/button_fragment"
         app:layout_constraintStart_toStartOf="@+id/button_fragment"
-        app:layout_constraintTop_toBottomOf="@+id/button_nested"
-        android:onClick="onClick"/>
+        app:layout_constraintTop_toBottomOf="@+id/button_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
