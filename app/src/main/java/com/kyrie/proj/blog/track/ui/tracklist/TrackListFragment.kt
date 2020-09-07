@@ -2,6 +2,7 @@ package com.kyrie.proj.blog.track.ui.tracklist
 
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kyrie.proj.blog.R
+import com.kyrie.proj.blog.track.RecyclerViewTrack
 import com.kyrie.proj.blog.track.adapter.ProductAdapter
 import com.kyrie.proj.blog.track.model.Product
 import kotlinx.android.synthetic.main.track_list_fragment.*
@@ -19,6 +21,7 @@ class TrackListFragment : Fragment() {
     private val list: MutableList<Product> = mutableListOf()
 
     companion object {
+        val TAG = "TrackListFragment"
         fun newInstance() = TrackListFragment()
     }
 
@@ -46,7 +49,17 @@ class TrackListFragment : Fragment() {
                 outRect.right = 20
             }
         })
-        rv_track.setOnClickListener {  }
+        RecyclerViewTrack(rv_track).startTrack(object : RecyclerViewTrack.ItemExposeListener {
+            override fun onItemViewVisible(position: Int) {
+                Log.i(TAG, "onItemViewVisible: position = $position")
+
+            }
+
+            override fun onItemViewInvisible(position: Int, showTime: Long) {
+                Log.i(TAG, "onItemViewInvisible: position = $position,showTime = $showTime")
+            }
+
+        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
