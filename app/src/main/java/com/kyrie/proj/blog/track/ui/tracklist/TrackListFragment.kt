@@ -21,7 +21,7 @@ class TrackListFragment : Fragment() {
     private val list: MutableList<Product> = mutableListOf()
 
     companion object {
-        val TAG = "TrackListFragment"
+        const val TAG = "TrackListFragment"
         fun newInstance() = TrackListFragment()
     }
 
@@ -49,17 +49,18 @@ class TrackListFragment : Fragment() {
                 outRect.right = 20
             }
         })
-        RecyclerViewTrack(rv_track).startTrack(object : RecyclerViewTrack.ItemExposeListener {
-            override fun onItemViewVisible(position: Int) {
-                Log.i(TAG, "onItemViewVisible: position = $position")
+        RecyclerViewTrack(rv_track).startTrack(lifecycle,
+            object : RecyclerViewTrack.ItemExposeListener {
+                override fun onItemViewVisible(position: Int) {
+                    Log.i(TAG, "onItemViewVisible: position = $position")
 
-            }
+                }
 
-            override fun onItemViewInvisible(position: Int, showTime: Long) {
-                Log.i(TAG, "onItemViewInvisible: position = $position,showTime = $showTime")
-            }
+                override fun onItemViewInvisible(position: Int, showTime: Long) {
+                    Log.i(TAG, "onItemViewInvisible: position = $position,showTime = $showTime")
+                }
 
-        })
+            })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
