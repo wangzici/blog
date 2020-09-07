@@ -24,21 +24,18 @@ open class RecyclerViewTrack(private val recyclerView: RecyclerView) {
 
     /**
      * 开启上报
+     * @param lifecycle 可为空，用于监听对应的生命周期
+     * @param listener 上报监听器
      */
-    fun startTrack(lifecycle: Lifecycle, listener: ItemExposeListener) {
+    fun startTrack(lifecycle: Lifecycle?, listener: ItemExposeListener) {
         this.listener = listener
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 checkCurrentVisibleItem()
             }
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                checkCurrentVisibleItem()
-            }
         })
-        lifecycle.addObserver(LifecycleEventObserver { _, event ->
+        lifecycle?.addObserver(LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) dispatchResume()
             else if (event == Lifecycle.Event.ON_PAUSE) dispatchPause()
         })
@@ -72,6 +69,7 @@ open class RecyclerViewTrack(private val recyclerView: RecyclerView) {
         view?.let {
             val rect = Rect()
             val rootVisible = view.getGlobalVisibleRect(rect)
+            //判断若超出了一半位置则算曝光
             val visibleHeightEnough =
                 orientation == OrientationHelper.VERTICAL && rect.height() >= view.measuredHeight / 2
             val visibleWidthEnough =
@@ -80,7 +78,7 @@ open class RecyclerViewTrack(private val recyclerView: RecyclerView) {
             val visible = (visibleHeightEnough || visibleWidthEnough) && rootVisible
             val lastValue = timeSparseArray[position]
             val curTime = System.currentTimeMillis()
-            Log.i(TAG, "checkViewVisible: position = $position, visible = $visible, lastValue = $lastValue")
+//            Log.i(TAG, "checkViewVisible: position = $position, visible = $visible, lastValue = $lastValue")
             if (lastValue > 0) {
                 //从显示到不显示
                 if (!visible) {
@@ -94,7 +92,7 @@ open class RecyclerViewTrack(private val recyclerView: RecyclerView) {
     }
 
     /**
-     * 在Fragment走到Pause时onScroll不会被触发
+     * 在Fragment走到Pause时onScroll不会被触发上报，所以需要手动触发
      */
     private fun dispatchPause() {
         val size = timeSparseArray.size()
@@ -112,7 +110,7 @@ open class RecyclerViewTrack(private val recyclerView: RecyclerView) {
     }
 
     /**
-     * 在Fragment在后续走到Resume时onScroll不会被触发
+     * 在Fragment在后续走到Resume时onScroll不会被触发，所以需要手动触发
      */
     private fun dispatchResume() {
         val size = timeSparseArray.size()
@@ -131,6 +129,7 @@ open class RecyclerViewTrack(private val recyclerView: RecyclerView) {
         lastTime: Long,
         curTime: Long
     ) {
+        Log.i(TAG, "dispatchInvisible: position = $position")
         if (lastTime == curTime) {
             return
         }
@@ -142,14 +141,14 @@ open class RecyclerViewTrack(private val recyclerView: RecyclerView) {
      * 分发Visible
      */
     private fun dispatchVisible(position: Int, curTime: Long) {
+        Log.i(TAG, "dispatchVisible: position = $position")
         timeSparseArray.put(position, curTime)
         listener?.onItemViewVisible(position)
     }
 
     interface ItemExposeListener{
         /**
-         * item 可见性回调
-         * 回调此方法时 视觉上一定是可见的（无论可见多少）
+         * item可见回调
          * @param position item在列表中的位置
          */
         fun onItemViewVisible(position: Int)

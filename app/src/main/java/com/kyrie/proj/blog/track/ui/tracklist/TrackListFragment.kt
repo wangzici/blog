@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -58,6 +59,8 @@ class TrackListFragment : Fragment() {
 
                 override fun onItemViewInvisible(position: Int, showTime: Long) {
                     Log.i(TAG, "onItemViewInvisible: position = $position,showTime = $showTime")
+                    Toast.makeText(context, "商品${position}不再显示，曝光时间为$showTime", Toast.LENGTH_SHORT)
+                        .show()
                 }
 
             })
