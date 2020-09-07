@@ -18,7 +18,7 @@ import com.kyrie.proj.blog.track.adapter.ProductAdapter
 import com.kyrie.proj.blog.track.model.Product
 import kotlinx.android.synthetic.main.track_list_fragment.*
 
-class TrackListFragment : Fragment() {
+class TrackListFragment : TrackFragment() {
     private val list: MutableList<Product> = mutableListOf()
 
     companion object {
@@ -54,7 +54,7 @@ class TrackListFragment : Fragment() {
             object : RecyclerViewTrack.ItemExposeListener {
                 override fun onItemViewVisible(position: Int) {
                     Log.i(TAG, "onItemViewVisible: position = $position")
-
+                    setCurNum(position + 1)
                 }
 
                 override fun onItemViewInvisible(position: Int, showTime: Long) {
@@ -73,6 +73,7 @@ class TrackListFragment : Fragment() {
             Observer {
                 list.clear()
                 list.addAll(it)
+                setInfoSize(list.size)
                 rv_track.adapter!!.notifyDataSetChanged()
             })
     }
