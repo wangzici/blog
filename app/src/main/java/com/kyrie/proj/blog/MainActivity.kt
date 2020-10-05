@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.kyrie.proj.blog.fragment.FragmentTestActivity
+import com.kyrie.proj.blog.measure.MeasureActivity
 import com.kyrie.proj.blog.nestedscroll.NestedScrollActivity
 import com.kyrie.proj.blog.textview.TextActivity
 import com.kyrie.proj.blog.track.TrackStudyActivity
@@ -23,6 +24,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             R.id.button_text -> startActivity(Intent(this, TextActivity::class.java))
             R.id.button_track -> startActivity(Intent(this, TrackStudyActivity::class.java))
             R.id.button_vp -> startActivity(Intent(this, ViewPagerActivity::class.java))
+            R.id.button_measure -> startActivity(Intent(this, MeasureActivity::class.java))
         }
     }
 
